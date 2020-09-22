@@ -1,53 +1,100 @@
-// В новом файле js / stat.js определите функцию renderStatistics, которая будет являться методом объекта window, со следующими аргументами:
-
-// ctx — канвас на котором рисуется игра.
-//   names — массив, с именами игроков прошедших уровень.Имя самого игрока — Вы.Массив имён формируется случайным образом.
-//     times — массив, по длине совпадающий с массивом names.Массив содержит время прохождения уровня соответствующего игрока из массива names.
-// Время прохождения уровня задано в миллисекундах.
-
-// Эта функция будет вызываться каждый раз когда игрок проходит уровень.Чтобы успешно пройти уровень, надо выстрелить фаерболом(клавиша Shift) в забор.
-
-// var window.renderStatistics = function (ctx, names, times) {
-
-// };
-
-// облако fillRect
-// {
-//   координатами[100, 10],
-//     высотой 270px
-//   шириной 420px
-// }
-
-// тень fillRect
-// {
-//   высотой 270px
-//   шириной 420px
-//   цветом rgba(0, 0, 0, 0.7)
-//   смещённый на 10px вниз и вправо
-// }
-
-// гистограммы
-// {
-//   Высота гистограммы 150px.
-//   Ширина колонки 40px.
-//   Цвет колонки игрока Вы rgba(255, 0, 0, 1).
-//   Цвет колонок других игроков — синий, а насыщенность задаётся случайным образом.
-//   Времена игроков располагаются над колонками.
-//   Имена игроков — под колонками гистограммы.
-// }
-
-// В rgba последний параметр — это прозрачность, а не насыщенность.Поэтому для задания цвета колонок других игроков нужно использовать hsl.Для перевода
-// цветов из rgba в hsl вы можете использовать, например, вот этот конвертер, там же можно вспомнить особенности разных цветовых форматов или пересмотреть
-// часть про операции с цветом в лекции «Препроцессоры и автоматизация» курса «HTML и CSS.Адаптивная вёрстка и автоматизация».
-
 'use strict';
 
-window.renderStatistics = function (ctx) {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-  ctx.fillRect(110, 60, 500, 200);
+const CLOUD_WIDTH = 420;
+const CLOUD_HEIGHT = 270;
+const CLOUD_X = 110;
+const CLOUD_Y = 10;
+const CLOUD_GAP = 10;
+const FONT_GAP = 90;
+const SCORE_GAP = 10;
+const BAR_WIDTH = 90;
+const CONGRATULATIONS_TEXT_X = 135;
+const CONGRATULATIONS_TEXT_Y = 35;
+const LIST_OF_REZULTS_X = 135;
+const LIST_OF_REZULTS_Y = 55;
+const FIRST_PLAYER_NAME_X = 160;
+const FIRST_PLAYER_NAME_Y = 260;
+const FIRST_PLAYER_BAR_X = 160;
+const FIRST_PLAYER_BAR_Y = 90;
+const FIRST_PLAYER_BAR_WIDTH = 40;
+const FIRST_PLAYER_BAR_HEIGHT = 150;
 
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(100, 50, 500, 200);
+const renderCloud = (ctx, x, y, color) => {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 };
 
-console.log('hello');
+window.renderStatistics = (ctx, players, times) => {
+  renderCloud(
+    ctx,
+    CLOUD_X + CLOUD_GAP,
+    CLOUD_Y + CLOUD_GAP,
+    'rgba(0, 0, 0, 0.7)');
+  renderCloud(
+    ctx,
+    CLOUD_X,
+    CLOUD_Y,
+    '#fff'
+  );
+
+  ctx.fillStyle = '#000';
+
+  ctx.fillText('Ура вы победили! ', CONGRATULATIONS_TEXT_X, CONGRATULATIONS_TEXT_Y);
+  ctx.fillText('Список результатов:', LIST_OF_REZULTS_X, LIST_OF_REZULTS_Y);
+
+  const getMaxElement = (arr) => {
+    var maxElement = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] > maxElement) {
+        maxElement = arr[i];
+      }
+    }
+
+    return Math.round(maxElement);
+  };
+
+  for (let i = 0; i < players.length; i++) {
+
+    ctx.font = "16px PT Mono";
+    ctx.fillStyle = 'black';
+
+    ctx.fillText(
+      players[i],
+      FIRST_PLAYER_NAME_X + FONT_GAP * i,
+      FIRST_PLAYER_NAME_Y
+    );
+
+    ctx.fillText(
+      Math.round(times[i]),
+      FIRST_PLAYER_NAME_X + FONT_GAP * i,
+      FIRST_PLAYER_BAR_Y - SCORE_GAP + FIRST_PLAYER_BAR_HEIGHT - FIRST_PLAYER_BAR_HEIGHT / getMaxElement(times) * Math.round(times[i]),
+    );
+
+    players[i] == 'Вы' ? ctx.fillStyle = 'rgba(255, 0, 0, 1)' : ctx.fillStyle = 'hsl(241, 100%,' + Math.floor(Math.random() * 99 + 1) + '%)';
+
+    ctx.fillRect(
+      FIRST_PLAYER_BAR_X + BAR_WIDTH * i,
+      FIRST_PLAYER_BAR_Y + FIRST_PLAYER_BAR_HEIGHT - FIRST_PLAYER_BAR_HEIGHT / getMaxElement(times) * Math.round(times[i]),
+      FIRST_PLAYER_BAR_WIDTH,
+      FIRST_PLAYER_BAR_HEIGHT / getMaxElement(times) * Math.round(times[i])
+    );
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
