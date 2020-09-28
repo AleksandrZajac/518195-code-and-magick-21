@@ -38,18 +38,21 @@ const similarWizardTemplate = document.querySelector(`#similar-wizard-template`)
 
 const renderWizard = (wizard) => {
   const wizardElement = similarWizardTemplate.cloneNode(true);
+  const label = wizardElement.querySelector(`.setup-similar-label`);
+  const wizardCoat = wizardElement.querySelector(`.wizard-coat`);
+  const wizardEyes = wizardElement.querySelector(`.wizard-eyes`);
 
-  wizardElement.querySelector(`.setup-similar-label`).textContent = `${wizard.name} ${wizard.surname}`;
-  wizardElement.querySelector(`.wizard-coat`).style.fill = wizard.coatColor;
-  wizardElement.querySelector(`.wizard-eyes`).style.fill = wizard.eyesColor;
+  label.textContent = `${wizard.name} ${wizard.surname}`;
+  wizardCoat.style.fill = wizard.coatColor;
+  wizardEyes.style.fill = wizard.eyesColor;
 
   return wizardElement;
 };
 
 const fragment = document.createDocumentFragment();
 for (let i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
+  fragment.append(renderWizard(wizards[i]));
 }
-similarListElement.appendChild(fragment);
+similarListElement.append(fragment);
 
 userDialog.querySelector(`.setup-similar`).classList.remove(`hidden`);
