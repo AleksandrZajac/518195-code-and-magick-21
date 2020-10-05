@@ -1,103 +1,119 @@
 'use strict';
 
-var setupOpen = document.querySelector('.setup-open');
-var setup = document.querySelector('.setup');
-var setupClose = setup.querySelector('.setup-close');
+const setupOpen = document.querySelector(`.setup-open`);
+const setup = document.querySelector(`.setup`);
+const setupClose = setup.querySelector(`.setup-close`);
+const userNameInput = document.querySelector(`.setup-user-name`);
+const MIN_NAME_LENGTH = 2;
+const MAX_NAME_LENGTH = 25;
+const suit = document.querySelector(`.setup-wizard`);
+const coat = suit.querySelector(`.wizard-coat`);
+const eyes = suit.querySelector(`.wizard-eyes`);
+const fireballWrap = document.querySelector(`.setup-fireball-wrap`);
+const coatArr = [`rgb(101, 137, 164)`, `rgb(241, 43, 107)`, `rgb(146, 100, 161)`, `rgb(56, 159, 117)`, `rgb(215, 210, 55)`, `rgb(0, 0, 0)`];
+const eyesArr = [`black`, `red`, `blue`, `yellow`, `green`];
+const fireballArr = [`rgb(238, 72, 48)`, `rgb(48, 168, 238)`, `rgb(92, 230, 192)`, `rgb(232, 72, 213)`, `rgb(230, 232, 72)`];
+// const fireballArr = [`#ee4830`, `#30a8ee`, `#5ce6c0`, `#e848d5`, `#e6e848`];
+const sendValues = document.querySelectorAll(`input`);
 
-var onPopupEscPress = function (evt) {
-  if (evt.key === 'Escape' && !evt.target.matches('input[class="setup-user-name"]')) {
+fireballWrap.style.backgroundColor = fireballArr[0];
+coat.style.fill = coatArr[0];
+eyes.style.fill = eyesArr[0];
+
+const onPopupEscPress = (evt) => {
+  if (evt.key === `Escape` && !evt.target.matches(`input[class="setup-user-name"]`)) {
     evt.preventDefault();
     closePopup();
   }
 };
 
-var openPopup = function () {
-  setup.classList.remove('hidden');
-
-  document.addEventListener('keydown', onPopupEscPress);
+const openPopup = () => {
+  setup.classList.remove(`hidden`);
+  document.addEventListener(`keydown`, onPopupEscPress);
 };
 
-var closePopup = function () {
-  setup.classList.add('hidden');
-
-  document.removeEventListener('keydown', onPopupEscPress);
+const closePopup = () => {
+  setup.classList.add(`hidden`);
+  document.removeEventListener(`keydown`, onPopupEscPress);
 };
 
-setupOpen.addEventListener('click', function () {
+setupOpen.addEventListener(`click`, () => {
   openPopup();
 });
 
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
+setupOpen.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
     openPopup();
   }
 });
 
-setupClose.addEventListener('click', function () {
+setupClose.addEventListener(`click`, () => {
   closePopup();
 });
 
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
+setupClose.addEventListener(`keydown`, (evt) => {
+  if (evt.key === `Enter`) {
     closePopup();
   }
 });
 
-//-----------------------------------------------------------
-// var userNameInput = document.querySelector('.setup-user-name');
-
-// userNameInput.addEventListener('invalid', function () {
-//   if (userNameInput.validity.tooShort) {
-//     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-//   } else if (userNameInput.validity.tooLong) {
-//     userNameInput.setCustomValidity('Имя не должно превышать 25-ти символов');
-//   } else if (userNameInput.validity.valueMissing) {
-//     userNameInput.setCustomValidity('Обязательное поле');
-//   } else {
-//     userNameInput.setCustomValidity('');
-//   }
-// });
-
-// console.log(userNameInput.validity);
-var MIN_NAME_LENGTH = 2;
-var MAX_NAME_LENGTH = 25;
-
-var userNameInput = document.querySelector('.setup-user-name');
-
-userNameInput.addEventListener('input', function () {
-  var valueLength = userNameInput.value.length;
-  console.log(valueLength);
+userNameInput.addEventListener(`input`, () => {
+  const valueLength = userNameInput.value.length;
 
   if (valueLength < MIN_NAME_LENGTH) {
-    userNameInput.setCustomValidity('Ещё ' + (MIN_NAME_LENGTH - valueLength) + ' симв.');
+    userNameInput.setCustomValidity(`Ещё ${MIN_NAME_LENGTH - valueLength} симв.`);
   } else if (valueLength > MAX_NAME_LENGTH) {
-    userNameInput.setCustomValidity('Удалите лишние ' + (valueLength - MAX_NAME_LENGTH) + ' симв.');
+    userNameInput.setCustomValidity(`Удалите лишние ${valueLength - MAX_NAME_LENGTH} симв.`);
   } else {
-    userNameInput.setCustomValidity('');
+    userNameInput.setCustomValidity(``);
   }
-
   userNameInput.reportValidity();
 });
-//-------------------------------------------------------------------------------
-/* <use xlink:href="#wizard-coat" class="wizard-coat" style="fill: #6589a4"></use>
-<use xlink:href="#wizard-head" class="wizard-head"></use>
-<use xlink:href="#wizard-eyes" class="wizard-eyes"></use>
-<use xlink:href="#wizard-hands" class="wizard-hands"></use> */
 
-var coat = document.querySelector('#wizard-coat');
-//  coat.style.fill = 'red';
+const colorToggle = (arr, element, number) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (element.style.fill === arr[i] && element.style.fill !== arr[arr.length - 1]) {
+      element.style.fill = arr[i + 1];
+      sendValues[number].value = element.style.fill;
+      break;
+    }
+    if (element.style.fill === arr[arr.length - 1]) {
+      element.style.fill = arr[0];
+      sendValues[number].value = element.style.fill;
+      break;
+    }
+  }
+};
 
-setupOpen.addEventListener('click', function () {
-  setup.classList.add('hidden');
-});
+const colorToggleFireball = (arr, element, number) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (element.style.backgroundColor === arr[i] && element.style.background !== arr[arr.length - 1]) {
+      element.style.backgroundColor = arr[i + 1];
+      sendValues[number].value = element.style.background;
+      break;
+    }
+    if (element.style.backgroundColor === arr[arr.length - 1]) {
+      element.style.backgroundColor = arr[0];
+      sendValues[number].value = element.style.background;
+      break;
+    }
+  }
+};
 
-
-document.addEventListener('keydown', function (evt) {
-  if (evt.key === 'd') {
-    debugger
-    setup.classList.add('hidden');
-    coat.style.fill = 'red';
+coat.addEventListener(`click`, (evt) => {
+  if (evt.target.matches(`use[class="wizard-coat"]`)) {
+    colorToggle(coatArr, coat, 2);
   }
 });
-console
 
+eyes.addEventListener(`click`, (evt) => {
+  if (evt.target.matches(`use[class="wizard-eyes"]`)) {
+    colorToggle(eyesArr, eyes, 3);
+  }
+});
+
+fireballWrap.addEventListener(`click`, (evt) => {
+  if (evt.target.matches(`div`)) {
+    colorToggleFireball(fireballArr, fireballWrap, 4);
+  }
+});
